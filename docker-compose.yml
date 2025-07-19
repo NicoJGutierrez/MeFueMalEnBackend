@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Servicio de la aplicación backend
+  backend:
+    build: .
+    container_name: mefuemalenbackend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/miapp
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Servicio de MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: mefuemalen-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+    restart: unless-stopped
+
+# Volumen para persistir los datos de MongoDB
+volumes:
+  mongodb_data:
+
+# Red para conectar los servicios
+networks:
+  app-network:
+    driver: bridge
